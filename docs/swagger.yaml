@@ -1,0 +1,237 @@
+definitions:
+  models.DelUser:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  models.Task:
+    properties:
+      hours:
+        type: integer
+      minutes:
+        type: integer
+      name:
+        type: string
+      task_id:
+        type: integer
+    type: object
+  models.TaskDate:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+    type: object
+  models.UpdUser:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      passport_number:
+        type: string
+      passport_serie:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.UserPassport:
+    properties:
+      passport_number:
+        type: string
+      passport_serie:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Swagger API for project Time tracker
+  title: Swagger API
+  version: "1.0"
+paths:
+  /task/begin:
+    put:
+      consumes:
+      - application/json
+      description: start time counting
+      parameters:
+      - description: 'date format: 2006-01-02T15:04:05Z'
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskDate'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Task start
+  /task/end:
+    put:
+      consumes:
+      - application/json
+      description: stop time counting
+      parameters:
+      - description: 'date format: 2006-01-02T15:04:05Z'
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/models.TaskDate'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Task finish
+  /user:
+    delete:
+      consumes:
+      - application/json
+      description: delete user by id
+      parameters:
+      - description: json
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.DelUser'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: User delete
+    post:
+      consumes:
+      - application/json
+      description: create user by passport info
+      parameters:
+      - description: json
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserPassport'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: User create
+    put:
+      consumes:
+      - application/json
+      description: update user by id
+      parameters:
+      - description: json
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdUser'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: User update
+  /users:
+    get:
+      description: get users by filter
+      parameters:
+      - description: user name
+        in: query
+        name: name
+        type: string
+      - description: user surname
+        in: query
+        name: surname
+        type: string
+      - description: user patronymic
+        in: query
+        name: patronymic
+        type: string
+      - description: user address
+        in: query
+        name: address
+        type: string
+      - description: user passport serie
+        example: "1111"
+        in: query
+        name: passport_serie
+        type: string
+      - description: user passport number
+        example: "222222"
+        in: query
+        name: passport_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: List users
+  /users/{user_id}/tasks:
+    get:
+      description: get tasks by user_id
+      parameters:
+      - description: user id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Task'
+            type: array
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: List tasks
+swagger: "2.0"
